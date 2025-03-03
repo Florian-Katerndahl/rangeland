@@ -10,7 +10,7 @@
             "type": "object",
             "fa_icon": "fas fa-terminal",
             "description": "Define where the pipeline should find input data and save output data.",
-            "required": ["input", "dem", "wvdb", "data_cube", "aoi", "endmember", "outdir"],
+            "required": ["input", "dem", "wvdb", "data_cube", "aoi", "outdir"],
             "properties": {
                 "input": {
                     "type": "string",
@@ -54,16 +54,6 @@
                     "help_text": "A single vector file specifying the spatial extend of the targeted area.",
                     "pattern": "^\\S+\\.(gpkg|shp)$",
                     "format": "file-path"
-                },
-                "endmember": {
-                    "type": "string",
-                    "fa_icon": "fas fa-chart-line",
-                    "exists": true,
-                    "description": "Endmember definition.",
-                    "help_text": "A single text file specifying where rows correspond to satellite bands and columns correspond to endmembers. Values correspond to reflectance values and are separated by spaces.",
-                    "pattern": "^\\S+\\.txt$",
-                    "format": "file-path",
-                    "mimetype": "text/plain"
                 },
                 "outdir": {
                     "type": "string",
@@ -129,51 +119,6 @@
             },
             "fa_icon": "fas fa-satellite"
         },
-        "higher_level_processing_modification": {
-            "title": "Higher level processing modification",
-            "type": "object",
-            "default": "",
-            "properties": {
-                "indexes": {
-                    "type": "string",
-                    "default": "NDVI BLUE GREEN RED NIR SWIR1 SWIR2",
-                    "help_text": "Space-separated list of indexes and bands that should be considered in time series analyses. They are indicated by using their established abbreviations. The full list of available indexes is available at [https://force-eo.readthedocs.io/en/latest/components/higher-level/tsa/param.html](https://force-eo.readthedocs.io/en/latest/components/higher-level/tsa/param.html) under the 'INDEX' parameter. Spectral unmixing is a special index and always activated.",
-                    "description": "Select which bands and indexes should be considered in time series analyses.",
-                    "fa_icon": "fas fa-satellite",
-                    "pattern": "((BLUE|GREEN|RED|NIR|SWIR1|SWIR2|RE1|RE2|RE3|BNIR|NDVI|EVI|NBR|NDTI|ARVI|SAVI|SARVI|TC-BRIGHT|TC-GREEN|TC-WET|TC-DI|NDBI|NDWI|MNDWI|NDMI|NDSI|SMA|kNDVI|NDRE1|NDRE2|CIre|NDVIre1|NDVIre2|NDVIre3|NDVIre1n|NDVIre2n|NDVIre3n|MSRre|MSRren,CCI)(\\s|$))+"
-                },
-                "return_tss": {
-                    "type": "boolean",
-                    "description": "Should the full time series stack be returned.",
-                    "help_text": "This parameter enables or disables the output of the time series stack for each tile and band/index. Here, each band shows the values of a single date.",
-                    "fa_icon": "fas fa-layer-group"
-                }
-            },
-            "description": "Modify higher level processing behaviour.",
-            "help_text": "These parameters can be used to modify the behaviour of the time series analyses process in higher level processing.",
-            "fa_icon": "fas fa-microchip"
-        },
-        "visualization": {
-            "title": "Visualization",
-            "type": "object",
-            "description": "Enable or disable visualizations.",
-            "default": "",
-            "properties": {
-                "mosaic_visualization": {
-                    "type": "boolean",
-                    "default": true,
-                    "description": "Whether mosaic visualization should be returned.",
-                    "fa_icon": "fas fa-image"
-                },
-                "pyramid_visualization": {
-                    "type": "boolean",
-                    "default": true,
-                    "description": "Whether pyramid visualization should be returned.",
-                    "fa_icon": "far fa-image"
-                }
-            },
-            "fa_icon": "fas fa-images"
-        },
         "workflow_configuration": {
             "title": "Workflow configuration",
             "type": "object",
@@ -185,12 +130,6 @@
                     "fa_icon": "fas fa-database",
                     "description": "Whether analysis ready data should be published to the output directory.",
                     "help_text": "By default, the results of preprocessing (aka. analyses ready data or level-2 data) are not published. Setting this parameter to `true` enforces that these files are published to the output directory."
-                },
-                "save_tsa": {
-                    "type": "boolean",
-                    "fa_icon": "fas fa-database",
-                    "description": "Whether the results of time series analyses should be published to the output directory.",
-                    "help_text": "By default, the results of higher level processing (aka. level-3 data) are not published. Setting this parameter to `true` enforces that these files are published to the output directory."
                 },
                 "group_size": {
                     "type": "integer",
@@ -362,12 +301,6 @@
         },
         {
             "$ref": "#/$defs/remote_sensing_image_options"
-        },
-        {
-            "$ref": "#/$defs/higher_level_processing_modification"
-        },
-        {
-            "$ref": "#/$defs/visualization"
         },
         {
             "$ref": "#/$defs/workflow_configuration"

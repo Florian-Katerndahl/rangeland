@@ -15,7 +15,7 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { RANGELAND  } from './workflows/rangeland'
+include { RANGELAND } from './workflows/rangeland'
 include { PIPELINE_INITIALISATION } from './subworkflows/local/utils_nfcore_rangeland_pipeline'
 include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_rangeland_pipeline'
 /*
@@ -27,7 +27,7 @@ include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_rang
 //
 // WORKFLOW: Run main analysis pipeline depending on type of input
 //
-workflow NFCORE_RANGELAND {
+workflow NFCORE_PREPROCESS {
 
     main:
 
@@ -38,9 +38,6 @@ workflow NFCORE_RANGELAND {
 
     emit:
     level2_ard     = RANGELAND.out.level2_ard
-    mosaic         = RANGELAND.out.mosaic
-    pyramid        = RANGELAND.out.pyramid
-    trends         = RANGELAND.out.trends
     multiqc_report = RANGELAND.out.multiqc_report // channel: /path/to/multiqc_report.html
 }
 /*
@@ -67,7 +64,7 @@ workflow {
     //
     // WORKFLOW: Run main workflow
     //
-    NFCORE_RANGELAND ()
+    NFCORE_PREPROCESS ()
 
     //
     // SUBWORKFLOW: Run completion tasks
@@ -79,7 +76,7 @@ workflow {
         params.outdir,
         params.monochrome_logs,
         params.hook_url,
-        NFCORE_RANGELAND.out.multiqc_report
+        NFCORE_PREPROCESS.out.multiqc_report
     )
 }
 

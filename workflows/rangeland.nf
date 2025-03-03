@@ -20,7 +20,6 @@ include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_rang
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
 include { PREPROCESSING } from '../subworkflows/local/preprocessing'
-include { HIGHER_LEVEL  } from '../subworkflows/local/higher_level'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -62,7 +61,6 @@ workflow RANGELAND {
     wvdb           = Channel.empty()
     cube_file      = file( params.data_cube )
     aoi_file       = file( params.aoi )
-    endmember_file = file( params.endmember )
 
     //
     // MODULE: untar
@@ -138,31 +136,11 @@ workflow RANGELAND {
         dem,
         wvdb,
         cube_file,
-        aoi_file,
+        aoi_file, // TODO: AOI file needs to be passed on to PREPROCESS_CONFIG as well!
         params.group_size,
         params.resolution
     )
     ch_versions = ch_versions.mix(PREPROCESSING.out.versions)
-
-    //
-    // SUBWORKFLOW: Generate trend files and visualization
-    //
-    HIGHER_LEVEL(
-        PREPROCESSING.out.tiles_and_masks,
-        cube_file,
-        endmember_file,
-        params.mosaic_visualization,
-        params.pyramid_visualization,
-        params.resolution,
-        params.sensors_level2,
-        params.start_date,
-        params.end_date,
-        params.indexes,
-        params.return_tss
-    )
-    ch_versions = ch_versions.mix(HIGHER_LEVEL.out.versions)
-
-    grouped_trend_data = HIGHER_LEVEL.out.mosaic.map{ it[1] }.flatten().buffer( size: Integer.MAX_VALUE, remainder: true )
 
     //
     // Collate and save software versions
@@ -218,9 +196,6 @@ workflow RANGELAND {
 
     emit:
     level2_ard     = PREPROCESSING.out.tiles_and_masks
-    mosaic         = HIGHER_LEVEL.out.mosaic
-    pyramid        = HIGHER_LEVEL.out.pyramid
-    trends         = HIGHER_LEVEL.out.trends
     multiqc_report = MULTIQC.out.report.toList() // channel: /path/to/multiqc_report.html
     versions       = ch_versions                 // channel: [ path(versions.yml) ]
 
