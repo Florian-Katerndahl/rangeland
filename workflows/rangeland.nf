@@ -67,35 +67,39 @@ workflow RANGELAND {
     //
     tar_versions = Channel.empty()
 
+    // TODO: create different channels for data already in FORCE structure (dir) and tared input (file, filtered to tar/tar.gz)
     // Determine type of params.input and extract when neccessary
-    ch_input = Channel.of(file(params.input))
-    ch_input.branch { it
-        archives : it.name.endsWith('tar') || it.name.endsWith('tar.gz')
-            return tuple([:], it)
-        dirs: true
-            return it
-    }
-    .set{ ch_input_types }
+    Channel.fromPath(params.input, type: 'file') // drop support for the directory structure
+        | filter { dir -> inRegion(dir) }
+        // keep branch closure so accessors below don't need any changes
+        | branch { it ->
+            archives : it.name.endsWith('tar') || it.name.endsWith('tar.gz')
+                return tuple([:], it)
+            dirs: true
+                return it
+            }
+        | set { ch_input_types }
 
     UNTAR_INPUT(ch_input_types.archives)
     ch_untared_inputs = UNTAR_INPUT.out.untar.map{ it[1] }
     tar_versions = tar_versions.mix(UNTAR_INPUT.out.versions)
 
-    data = data
-    .mix(ch_untared_inputs, ch_input_types.dirs)
-    .map{ dirs -> file("${dirs.toUriString()}/*/*", type: 'dir', checkIfExists: true) }.flatten()
-    .filter{ dir -> inRegion(dir) }
-    .map { dir ->
-        log.debug "Found ${dir}"
-        dir
-    }
+    Channel.empty()
+        | mix(ch_untared_inputs, ch_input_types.dirs)
+        | map {dir ->
+                log.debug "Found ${dir}"
+                dir
+            }
+        | set { data }
 
     data.ifEmpty {
         error "[nf-core/rangeland] ERROR: No directories found in input path or .tar file!"
     }
 
     // Determine type of params.dem and extract when neccessary
-    ch_dem = Channel.of(file(params.dem))
+    // FIXME: expects base path (directory), in there needs to be a vrt file!
+    ch_dem = Channel.fromPath(params.dem, type: 'dir')
+    // branching not necessary when only accepting directories!
     ch_dem.branch { it
         archives : it.name.endsWith('tar') || it.name.endsWith('tar.gz')
             return tuple([:], it)
@@ -111,7 +115,8 @@ workflow RANGELAND {
     dem = dem.mix(ch_untared_dem, ch_dem_types.dirs).first()
 
     // Determine type of params.wvdb and extract when neccessary
-    ch_wvdb = Channel.of(file(params.wvdb))
+    ch_wvdb = Channel.fromPath(params.wvdb, type: 'dir')
+    // branching not necessary when only accepting directories!
     ch_wvdb.branch { it
         archives : it.name.endsWith('tar') || it.name.endsWith('tar.gz')
             return tuple([:], it)
