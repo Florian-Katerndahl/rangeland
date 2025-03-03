@@ -10,11 +10,6 @@ outdir: "/lustre/geographie/katerndf/nf-core-rangeland-outdir"
 ard_outdir: "/lustre/fonda/b5/data-cube/level2"
 
 # rs options
-# sensors_level2: "LND05 LND07 LND08 LND09"
-# start_date: "1984-01-01"
-# end_date: "2024-12-31"
-# TODO have a filter for processing from level 1 to level 2!
-sensors_level2: "LND07 LND08" # wait, this doesn't select sensors FOR LEVEL2 but for LEVEL3 processing
 start_date: "2009-01-01"
 end_date: "2010-12-31"
 
