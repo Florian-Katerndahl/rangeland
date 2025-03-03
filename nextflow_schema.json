@@ -10,7 +10,7 @@
             "type": "object",
             "fa_icon": "fas fa-terminal",
             "description": "Define where the pipeline should find input data and save output data.",
-            "required": ["input", "dem", "wvdb", "data_cube", "aoi", "outdir"],
+            "required": ["input", "dem", "wvdb", "data_cube", "aoi", "outdir", "ard_outdir"],
             "properties": {
                 "input": {
                     "type": "string",
@@ -59,6 +59,13 @@
                     "type": "string",
                     "format": "directory-path",
                     "description": "The output directory where the results will be saved. You have to use absolute paths to storage on Cloud infrastructure.",
+                    "fa_icon": "fas fa-folder-open",
+                    "exists": true
+                },
+                "ard_outdir": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "description": "The directory where the Level-2 datacube is stored in normal FORCE structure.",
                     "fa_icon": "fas fa-folder-open",
                     "exists": true
                 },

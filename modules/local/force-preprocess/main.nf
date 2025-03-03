@@ -9,10 +9,11 @@ process FORCE_PREPROCESS {
     tuple path(conf), path(data), path(cube), path(tile), path(dem), path(wvdb)
 
     output:
-    path "**/*BOA.tif", optional:true, emit: boa_tiles
-    path "**/*QAI.tif", optional:true, emit: qai_tiles
-    path "**.log"                    , emit: log
-    path "versions.yml"              , emit: versions
+    path "**/*BOA.tif",       optional: true, emit: boa_tiles
+    path "**/*QAI.tif",       optional: true, emit: qai_tiles
+    path "**.log"                           , emit: log
+    path "versions.yml"                     , emit: versions
+    path "**/*{QAI,BOA}.tif", optional: true, emit: streamlined_output
 
     when:
     task.ext.when == null || task.ext.when

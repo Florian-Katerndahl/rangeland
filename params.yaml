@@ -7,6 +7,7 @@ aoi: "/lustre/fonda/b5/data-cube/misc/subset.gpkg"
 
 # output
 outdir: "/lustre/geographie/katerndf/nf-core-rangeland-outdir"
+ard_outdir: "/lustre/fonda/b5/data-cube/level2"
 
 # rs options
 # sensors_level2: "LND05 LND07 LND08 LND09"
