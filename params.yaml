@@ -1,0 +1,22 @@
+# inputs
+input: "/lustre/fonda/b5/data-cube/level1/191024/**"
+dem: "/lustre/fonda/b5/data-cube/misc/dem/"
+wvdb: "/lustre/fonda/b5/data-cube/misc/wvpdb/"
+data_cube: "/lustre/fonda/b5/data-cube/datacube-definition-default.prj"
+aoi: "/lustre/fonda/b5/data-cube/misc/subset.gpkg"
+
+# output
+outdir: "/lustre/geographie/katerndf/nf-core-rangeland-outdir"
+
+# rs options
+# sensors_level2: "LND05 LND07 LND08 LND09"
+# start_date: "1984-01-01"
+# end_date: "2024-12-31"
+# TODO have a filter for processing from level 1 to level 2!
+sensors_level2: "LND07 LND08" # wait, this doesn't select sensors FOR LEVEL2 but for LEVEL3 processing
+start_date: "2009-01-01"
+end_date: "2010-12-31"
+
+# workflow opts
+save_ard: true
+publish_dir_enabled: true
