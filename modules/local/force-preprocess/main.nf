@@ -13,7 +13,7 @@ process FORCE_PREPROCESS {
     path "**/*QAI.tif",       optional: true, emit: qai_tiles
     path "**.log"                           , emit: log
     path "versions.yml"                     , emit: versions
-    path "**/*{QAI,BOA}.tif", optional: true, emit: streamlined_output
+    path "**/*{BOA,QAI,DST,VZN,HOT,OVV}.tif", optional: true, emit: streamlined_output
 
     when:
     task.ext.when == null || task.ext.when
