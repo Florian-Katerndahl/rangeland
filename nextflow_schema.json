@@ -125,6 +125,65 @@
                 }
             },
             "fa_icon": "fas fa-satellite"
+        }, 
+        "force_configuration": {
+            "title": "FORCE configuration",
+            "type": "object",
+            "description": "These options are used to influence certain output options of the underlying FORCE processing system.",
+            "default": "",
+            "properties": {
+                "l2_output_format": {
+                    "type": "string",
+                    "default": "GTiff",
+                    "description": "",
+                    "pattern": "^(ENVI|GTiff|COG|CUSTOM)$"
+                },
+                "l2_file_ouput_options": {
+                    "type": "string",
+                    "default": "",
+                    "exists": true,
+                    "description": "File Output Options (Level 2)",
+                    "help_text": "A text file containing format specifications when using a custom output format for the level 2 processing system.",
+                    "pattern": "^\\S+\\.txt$",
+                    "format": "file-path"
+                },
+                "l2_output_dst": {
+                    "type": "string",
+                    "default": "",
+                    "description": "",
+                    "pattern": "^(TRUE|FALSE)$"
+                },
+                "l2_output_aod": {
+                    "type": "string",
+                    "default": "",
+                    "description": "",
+                    "pattern": "^(TRUE|FALSE)$"
+                },
+                "l2_output_wvp": {
+                    "type": "string",
+                    "default": "",
+                    "description": "",
+                    "pattern": "^(TRUE|FALSE)$"
+                },
+                "l2_output_vzn": {
+                    "type": "string",
+                    "default": "",
+                    "description": "",
+                    "pattern": "^(TRUE|FALSE)$"
+                },
+                "l2_output_hot": {
+                    "type": "string",
+                    "default": "",
+                    "description": "",
+                    "pattern": "^(TRUE|FALSE)$"
+                },
+                "l2_output_ovv": {
+                    "type": "string",
+                    "default": "",
+                    "description": "",
+                    "pattern": "^(TRUE|FALSE)$"
+                }
+            }
         },
         "workflow_configuration": {
             "title": "Workflow configuration",

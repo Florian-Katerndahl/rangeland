@@ -3,7 +3,7 @@ process MERGE {
     label 'process_low'
     label 'error_retry'
 
-    container "docker.io/davidfrantz/force:3.8.01"
+    container "docker.io/kelewinska/force-ubuntu24:3.8.10"
 
     input:
     val (data_type) // defines whether qai or boa is merged

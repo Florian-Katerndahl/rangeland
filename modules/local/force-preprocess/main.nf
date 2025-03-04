@@ -3,17 +3,17 @@ process FORCE_PREPROCESS {
     label 'process_medium'
     label 'error_retry'
 
-    container "docker.io/davidfrantz/force:3.8.01"
+    container "docker.io/kelewinska/force-ubuntu24:3.8.10"
 
     input:
-    tuple path(conf), path(data), path(cube), path(tile), path(dem), path(wvdb)
+    tuple path(conf), path(data), path(cube), path(tile), path(dem), path(wvdb), path(aoi), path(coo)
 
     output:
-    path "**/*BOA.tif",       optional: true, emit: boa_tiles
-    path "**/*QAI.tif",       optional: true, emit: qai_tiles
-    path "**.log"                           , emit: log
-    path "versions.yml"                     , emit: versions
-    path "**/*{BOA,QAI,DST,VZN,HOT,OVV}.tif", optional: true, emit: streamlined_output
+    path "**/*BOA.tif",                             optional: true, emit: boa_tiles
+    path "**/*QAI.tif",                             optional: true, emit: qai_tiles
+    path "**.log"                                                 , emit: log
+    path "versions.yml"                                           , emit: versions
+    path "**/*{BOA,QAI,DST,AOD,WVP,VZN,HOT,OVV}.*", optional: true, emit: streamlined_output
 
     when:
     task.ext.when == null || task.ext.when

@@ -61,6 +61,8 @@ workflow RANGELAND {
     wvdb           = Channel.empty()
     cube_file      = file( params.data_cube )
     aoi_file       = file( params.aoi )
+    // see https://github.com/nextflow-io/nextflow/issues/1694 and https://github.com/nf-core/sarek/blob/a7679b9b5c178351b1e96a3ffe7ee81ddf9aad06/main.nf#L226
+    custom_output  = params.l2_file_ouput_options ? file( params.l2_file_ouput_options ) : file( "$params.outdir/NO_FILE" )
 
     //
     // MODULE: untar
@@ -143,7 +145,15 @@ workflow RANGELAND {
         cube_file,
         aoi_file, // TODO: AOI file needs to be passed on to PREPROCESS_CONFIG as well!
         params.group_size,
-        params.resolution
+        params.resolution,
+        params.l2_output_format,
+        custom_output,
+        params.l2_output_dst,
+        params.l2_output_aod,
+        params.l2_output_wvp,
+        params.l2_output_vzn,
+        params.l2_output_hot,
+        params.l2_output_ovv
     )
     ch_versions = ch_versions.mix(PREPROCESSING.out.versions)
 

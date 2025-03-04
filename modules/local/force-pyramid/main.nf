@@ -2,7 +2,7 @@ process FORCE_PYRAMID {
     tag { tile }
     label 'process_low'
 
-    container "docker.io/davidfrantz/force:3.8.01"
+    container "docker.io/kelewinska/force-ubuntu24:3.8.10"
 
     input:
     tuple val(tile), path(image)

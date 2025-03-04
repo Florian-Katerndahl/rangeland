@@ -8,7 +8,8 @@ NXF_APPTAINER_CACHEDIR=/lustre/geographie/katerndf/apptainer-cache \
     -profile apptainer \
     -params-file params.yaml \
     -c custom.config \
-    -cache true
+    -cache true \
+    -resume
 
 # find $(grep -Po "(?=/lustre).*?(?=\")" params.yaml)"/preprocess" \
 #     -type d -name 'X*' \

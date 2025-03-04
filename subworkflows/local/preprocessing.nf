@@ -14,6 +14,14 @@ workflow PREPROCESSING {
         aoi_file
         group_size
         resolution
+        l2_output_format
+        l2_file_ouput_options
+        l2_output_dst
+        l2_output_aod
+        l2_output_wvp
+        l2_output_vzn
+        l2_output_hot
+        l2_output_ovv
 
     main:
 
@@ -32,7 +40,9 @@ workflow PREPROCESSING {
         masks = FORCE_GENERATE_ANALYSIS_MASK.out.masks.flatten().map{ x -> [ extractDirectory(x), x ] }
 
         // Preprocessing configuration
-        PREPROCESS_CONFIG( data, cube_file, FORCE_GENERATE_TILE_ALLOW_LIST.out.tile_allow, dem, wvdb )
+        PREPROCESS_CONFIG( data, cube_file, FORCE_GENERATE_TILE_ALLOW_LIST.out.tile_allow, dem, wvdb, aoi_file, l2_output_format,
+                           l2_file_ouput_options, l2_output_dst, l2_output_aod, l2_output_wvp, l2_output_vzn, l2_output_hot,
+                           l2_output_ovv )
         ch_versions = ch_versions.mix(PREPROCESS_CONFIG.out.versions.first())
 
         // Main preprocessing
