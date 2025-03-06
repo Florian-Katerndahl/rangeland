@@ -59,6 +59,8 @@ process PREPROCESS_CONFIG {
     sed -i "/^ORIGIN_LAT /c\\ORIGIN_LAT = \$ORIGINY" \$PARAM
     sed -i "/^PROJECTION /c\\PROJECTION = \$CRS" \$PARAM
     sed -i "/^ERASE_CLOUDS /c\\ERASE_CLOUDS = TRUE" \$PARAM
+    sed -i "/^MAX_CLOUD_COVER_FRAME /c\\MAX_CLOUD_COVER_FRAME = 90" \$PARAM
+    sed -i "/^MAX_CLOUD_COVER_TILE /c\\MAX_CLOUD_COVER_TILE = 90" \$PARAM
 
     # output options
     sed -i "/^OUTPUT_FORMAT /c\\OUTPUT_FORMAT = $l2_output_format" \$PARAM
