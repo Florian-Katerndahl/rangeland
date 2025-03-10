@@ -1,6 +1,6 @@
 process FORCE_GENERATE_ANALYSIS_MASK{
     tag { aoi.simpleName }
-    label 'process_single'
+    label 'process_medium'
 
     container "docker.io/kelewinska/force-ubuntu24:3.8.10"
 
