@@ -2,7 +2,7 @@ include { FORCE_GENERATE_TILE_ALLOW_LIST }         from '../../modules/local/for
 include { FORCE_GENERATE_ANALYSIS_MASK }           from '../../modules/local/force-generate_analysis_mask/main'
 include { PREPROCESS_CONFIG }                      from '../../modules/local/preprocess_force_config/main'
 include { FORCE_PREPROCESS }                       from '../../modules/local/force-preprocess/main'
-include { MERGE as MERGE_BOA; MERGE as MERGE_QAI } from '../../modules/local/merge/main'
+include { MERGE }                                  from '../../modules/local/merge/main'
 
 workflow PREPROCESSING {
 
@@ -28,6 +28,29 @@ workflow PREPROCESSING {
         // Closure to extract the parent directory of a file
         def extractDirectory = { it.parent.toString().substring(it.parent.toString().lastIndexOf('/') + 1 ) }
 
+        def extractProduct = {
+            def matcher = it.simpleName =~ /BOA|QAI|DST|AOD|WVP|VZN|HOT|OVV/
+
+            assert matcher.size() == 1
+
+            return matcher[0]
+        }
+        // Closure to extract both level 2 product type and how it needs to be handled
+        def extractHandling = {
+            open_options = [
+                "BOA": "merge",
+                "DST": "merge",
+                "VZN": "merge",
+                "HOT": "merge",
+                "AOD": "merge",
+                "WVP": "merge",
+                "QAI": "update",
+                "OVV": "update"
+            ]
+
+            return open_options[extractProduct(it)]
+        }
+
         ch_versions = Channel.empty()
 
         FORCE_GENERATE_TILE_ALLOW_LIST( aoi_file, cube_file )
@@ -49,44 +72,32 @@ workflow PREPROCESSING {
         FORCE_PREPROCESS( PREPROCESS_CONFIG.out.preprocess_config_and_data)
         ch_versions = ch_versions.mix(FORCE_PREPROCESS.out.versions.first())
 
-        //Group by tile, date and sensor
-        boa_tiles = FORCE_PREPROCESS.out.boa_tiles.flatten().map{ [ "${extractDirectory(it)}_${it.simpleName}", it ] }.groupTuple()
-        qai_tiles = FORCE_PREPROCESS.out.qai_tiles.flatten().map{ [ "${extractDirectory(it)}_${it.simpleName}", it ] }.groupTuple()
+        // Group by tile, date and sensor
+        FORCE_PREPROCESS.out.tiles
+            | flatten
+            | map { [ "${extractDirectory(it)}_${it.simpleName}", extractProduct(it), extractHandling(it), it]} // key; product; how to handle; files
+            | groupTuple
+            | branch {
+                singular: it[3].size() == 1
+                multi: it[3].size() > 1
+            }
+            | set { tiles }
 
-        //Find tiles to merge
-        boa_tiles_to_merge = boa_tiles.filter{ x -> x[1].size() > 1 }
-                                .map{ [ it[0].substring( 0, 11 ), it[1] ] }
-                                //Sort to ensure the same groups if you use resume
-                                .toSortedList{ a,b -> a[1][0].simpleName <=> b[1][0].simpleName }
-                                .flatMap{it}
-                                .groupTuple( remainder : true, size : group_size ).map{ [ it[0], it[1] .flatten() ] }
+        // FIXME: Does this break caching?
+        tiles.multi
+            | map { [it[0], it[1][0], it[2][0], it[3] ] } // "how to handle" is equal across all
+              //Sort to ensure the same groups if you use resume
+            | toSortedList { a,b -> a[3][0].simpleName <=> b[3][0].simpleName }
+            | flatMap { it }
+            | groupTuple( by: [0, 1], remainder: true, size: group_size )
+            | mix ( tiles.singular )
+            | map { [ it[0].substring( 0, 11 ), it[2][0], it[3].flatten() ]}
+            | set { tiles_to_merge }
 
-        qai_tiles_to_merge = qai_tiles.filter{ x -> x[1].size() > 1 }
-                                .map{ [ it[0].substring( 0, 11 ), it[1] ] }
-                                //Sort to ensure the same groups if you use resume
-                                .toSortedList{ a,b -> a[1][0].simpleName <=> b[1][0].simpleName }
-                                .flatMap{it}
-                                .groupTuple( remainder : true, size : group_size ).map{ [ it[0], it[1] .flatten() ] }
-
-        //Find tiles with only one file
-        boa_tiles_done = boa_tiles.filter{ x -> x[1].size() == 1 }.map{ x -> [ x[0] .substring( 0, 11 ), x[1][0] ] }
-        qai_tiles_done = qai_tiles.filter{ x -> x[1].size() == 1 }.map{ x -> [ x[0] .substring( 0, 11 ), x[1][0] ] }
-
-        MERGE_BOA( "boa", boa_tiles_to_merge, cube_file )
-        ch_versions = ch_versions.mix(MERGE_BOA.out.versions.first())
-
-        MERGE_QAI( "qai", qai_tiles_to_merge, cube_file )
-        ch_versions = ch_versions.mix(MERGE_QAI.out.versions.first())
-
-        //Concat merged list with single images, group by tile over time
-        boa_tiles = MERGE_BOA.out.tiles_merged
-                        .concat( boa_tiles_done ).groupTuple()
-                        .map { [it[0], it[1].flatten() ] }
-        qai_tiles = MERGE_QAI.out.tiles_merged
-                        .concat( qai_tiles_done ).groupTuple()
-                        .map { [it[0], it[1].flatten() ] }
+        MERGE( tiles_to_merge, cube_file, l2_file_ouput_options )
+        ch_versions = ch_versions.mix(MERGE.out.versions.first())
 
     emit:
-        tiles_and_masks = boa_tiles.join( qai_tiles ).join( masks )
+        tiles_and_masks = MERGE.out.tiles_merged.join( masks )
         versions        = ch_versions
 }
