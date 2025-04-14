@@ -9,11 +9,13 @@ process FORCE_PREPROCESS {
     tuple path(conf), path(data), path(cube), path(tile), path(dem), path(wvdb), path(aoi), path(coo)
 
     output:
+    // TODO: does this (BOA and QAI) need their own channels? can't they be seperated later on based on the file name?
+    //       I.e. extend the grouping in "preprocessing.nf" to include product
     path "**/*BOA.tif",                             optional: true, emit: boa_tiles
     path "**/*QAI.tif",                             optional: true, emit: qai_tiles
     path "**.log"                                                 , emit: log
     path "versions.yml"                                           , emit: versions
-    path "**/*{BOA,QAI,DST,AOD,WVP,VZN,HOT,OVV}.*", optional: true, emit: streamlined_output
+    path "**/*{BOA,QAI,DST,AOD,WVP,VZN,HOT,OVV}.*", optional: true, emit: tiles
 
     when:
     task.ext.when == null || task.ext.when
