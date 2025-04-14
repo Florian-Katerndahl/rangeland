@@ -1,17 +1,18 @@
 # inputs
-input: "/lustre/fonda/b5/data-cube/level1/191024/**"
+#input: "/lustre/fonda/b5/data-cube/level1/{189023,189024,188023,188024}/**"
+input: "/lustre/fonda/b5/data-cube/test-level1/**"
 dem: "/lustre/fonda/b5/data-cube/misc/dem/"
 wvdb: "/lustre/fonda/b5/data-cube/misc/wvpdb/"
-data_cube: "/lustre/fonda/b5/data-cube/datacube-definition-default.prj"
-aoi: "/lustre/fonda/b5/data-cube/misc/subset.gpkg"
+data_cube: "/lustre/fonda/b5/data-cube/datacube-definition.prj"
+aoi: "/lustre/fonda/b5/data-cube/misc/ger.gpkg" # europe.gpkg
 
 # output
 outdir: "/lustre/geographie/katerndf/nf-core-rangeland-outdir"
-ard_outdir: "/lustre/fonda/b5/data-cube/level2"
+ard_outdir: "/lustre/fonda/b5/data-cube/level2-part2"
 
 # rs options
-start_date: "2009-01-01"
-end_date: "2010-12-31"
+start_date: "2009-07-01"
+end_date: "2009-09-01"
 
 # workflow opts
 save_ard: true
