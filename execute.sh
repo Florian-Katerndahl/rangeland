@@ -3,7 +3,7 @@
 
 # find /lustre/geographie/fonda/dc/level1 -type f -name 'L*.tar' -exec bash -c "BN=\$(basename {} | cut -d '_' -f 3); ln -s {} /lustre/fonda/b5/data-cube/level1/\$BN/\$(basename {})" bash {} \;
 
-NXF_APPTAINER_CACHEDIR=/lustre/geographie/katerndf/apptainer-cache \
+JAVA_TOOL_OPTIONS=-Xmx2048m NXF_APPTAINER_CACHEDIR=/lustre/geographie/katerndf/apptainer-cache \
     nextflow run main.nf \
     -profile apptainer \
     -params-file params.yaml \
