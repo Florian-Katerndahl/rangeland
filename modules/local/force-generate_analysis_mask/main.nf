@@ -2,7 +2,7 @@ process FORCE_GENERATE_ANALYSIS_MASK{
     tag { aoi.simpleName }
     label 'process_medium'
 
-    container "docker.io/kelewinska/force-ubuntu24:3.8.10"
+    container "docker.io/davidfrantz/force:3.8.01"
 
     input:
     path aoi

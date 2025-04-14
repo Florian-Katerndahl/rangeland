@@ -3,7 +3,7 @@ process FORCE_PREPROCESS {
     label 'process_medium'
     label 'error_retry'
 
-    container "docker.io/kelewinska/force-ubuntu24:3.8.10"
+    container "docker.io/davidfrantz/force:3.8.01"
 
     input:
     tuple path(conf), path(data), path(cube), path(tile), path(dem), path(wvdb), path(aoi), path(coo)

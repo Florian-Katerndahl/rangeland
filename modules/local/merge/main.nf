@@ -3,7 +3,7 @@ process MERGE {
     label 'process_low'
     //label 'error_retry'
 
-    container "docker.io/floriankaterndahl/force:3.8.02-12"
+    container "docker.io/davidfrantz/force:3.8.01"
 
     input:
     tuple val(id), val(mode), path('input/?/*')

@@ -3,7 +3,7 @@ process PREPROCESS_CONFIG {
     label 'process_single'
     label 'error_retry'
 
-    container "docker.io/kelewinska/force-ubuntu24:3.8.10"
+    container "docker.io/davidfrantz/force:3.8.01"
 
     input:
     path data
