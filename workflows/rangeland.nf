@@ -143,7 +143,7 @@ workflow RANGELAND {
         dem,
         wvdb,
         cube_file,
-        aoi_file, // TODO: AOI file needs to be passed on to PREPROCESS_CONFIG as well!
+        aoi_file,
         params.group_size,
         params.resolution,
         params.l2_output_format,
