@@ -30,6 +30,15 @@ process PREPROCESS_CONFIG {
 
     script:
     def coo = optional_custom_options.name == 'NO_FILE' ? "NULL" : './' + optional_custom_options
+    
+    def extractWRS2 = {
+        def matcher = it.simpleName =~ /(?<=_)\d{6}(?=_)/
+        assert matcher.size() == 1
+
+        return matcher[0]
+    }
+
+    String WRS_tile = extractWRS2(data)
     """
     BASE=\$(basename $data)
 
@@ -46,7 +55,8 @@ process PREPROCESS_CONFIG {
     BLOCKSIZE=\$(sed '7q;d' $cube)
 
     # get dem vrt file
-    dem_file=\$(find $dem/ -type f -name "*.vrt" -print | head -n 1)
+    # either tile specific vrt or global one (discouraged)
+    dem_file=\$(find $dem/ -type f -name "*$WRS_tile\.vrt" -o -name "global.vrt" | head -n 1)
 
     # set parameters
     sed -i "/^FILE_AOI /c\\FILE_AOI = $aoi" \$PARAM
