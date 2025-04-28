@@ -41,7 +41,7 @@ process MERGE {
     "${task.process}":
         force: \$(force -v | sed 's/.*: //')
         r-base: \$(echo \$(R --version 2>&1) | sed 's/^.*R version //; s/ .*\$//')
-        raster: \$(Rscript -e "library(raster); cat(as.character(packageVersion('raster')))")
+        terra: \$(Rscript -e "library(terra); cat(as.character(packageVersion('terra')))")
     END_VERSIONS
     """
 
