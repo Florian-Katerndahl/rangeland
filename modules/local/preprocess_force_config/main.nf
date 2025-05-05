@@ -54,13 +54,16 @@ process PREPROCESS_CONFIG {
     TILESIZE=\$(sed '6q;d' $cube)
     BLOCKSIZE=\$(sed '7q;d' $cube)
 
-    # get dem vrt file
-    # either tile specific vrt or global one (discouraged)
+    # get dem vrt file and the respective NA value
+    # either tile specific vrt or global one (discouraged); user should make sure that not both
+    # "versions" are present as order may not be guaranteed
     dem_file=\$(find $dem/ -type f -name "*$WRS_tile\.vrt" -o -name "global.vrt" | head -n 1)
+    DEMNAVAL=\$(gdalinfo \$dem_file | grep 'NoData' | cut -d '=' -f2 | tr -d '[:cntrl:][:space:]')
 
     # set parameters
     sed -i "/^FILE_AOI /c\\FILE_AOI = $aoi" \$PARAM
     sed -i "/^FILE_DEM /c\\FILE_DEM = \$dem_file" \$PARAM
+    sed -i "/^DEM_NODATA /c\\DEM_NODATA = \$DEMNAVAL" \$PARAM
     sed -i "/^DIR_WVPLUT /c\\DIR_WVPLUT = $wvdb" \$PARAM
     sed -i "/^FILE_TILE /c\\FILE_TILE = $tile" \$PARAM
     sed -i "/^TILE_SIZE /c\\TILE_SIZE = \$TILESIZE" \$PARAM
@@ -70,7 +73,7 @@ process PREPROCESS_CONFIG {
     sed -i "/^PROJECTION /c\\PROJECTION = \$CRS" \$PARAM
     sed -i "/^ERASE_CLOUDS /c\\ERASE_CLOUDS = TRUE" \$PARAM
     sed -i "/^MAX_CLOUD_COVER_FRAME /c\\MAX_CLOUD_COVER_FRAME = 90" \$PARAM
-    sed -i "/^MAX_CLOUD_COVER_TILE /c\\MAX_CLOUD_COVER_TILE = 90" \$PARAM
+    sed -i "/^MAX_CLOUD_COVER_TILE /c\\MAX_CLOUD_COVER_TILE  = 90" \$PARAM
 
     # output options
     sed -i "/^OUTPUT_FORMAT /c\\OUTPUT_FORMAT = $l2_output_format" \$PARAM
