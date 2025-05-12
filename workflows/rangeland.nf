@@ -63,6 +63,11 @@ workflow RANGELAND {
     aoi_file       = file( params.aoi )
     // see https://github.com/nextflow-io/nextflow/issues/1694 and https://github.com/nf-core/sarek/blob/a7679b9b5c178351b1e96a3ffe7ee81ddf9aad06/main.nf#L226
     custom_output  = params.l2_file_ouput_options ? file( params.l2_file_ouput_options ) : file( "$params.outdir/NO_FILE" )
+    
+    // what would be the appropriate method to create a new empty file?
+    if (custom_output.name == "NO_FILE" && !custom_output.exists()) {
+        error "ERROR: Create empty file at ${custom_output} and restart workflow"
+    }
 
     //
     // MODULE: untar
