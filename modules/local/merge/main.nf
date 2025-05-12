@@ -1,7 +1,7 @@
 process MERGE {
     tag { id }
     label 'process_low'
-    //label 'error_retry'
+    label 'error_retry'
 
     container "docker.io/davidfrantz/force:3.8.01"
 
@@ -19,6 +19,7 @@ process MERGE {
 
     script:
     """
+    export QAIMERGECPUS=${task.cpus}
     # get files to merge
     toMerge=\$(find input/ -type l -printf "%p ")
     numToMerge=\$(echo \$toMerge | wc -w) # WARN: this assumes no whitespaces in input file names!
