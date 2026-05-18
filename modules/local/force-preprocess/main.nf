@@ -39,7 +39,28 @@ process FORCE_PREPROCESS {
 
     FILEPATH=$data
     BASE=\$(basename $data)
-    force-l2ps \$FILEPATH \$PARAM > level2_log/\$BASE.log
+    {
+        echo "FORCE Level 2 Processing System"
+        echo "-----------------------------------------------------------"
+        echo ""
+        echo "Start of processing: \$(date +"%Y-%m-%d %H:%M:%S")"
+        echo "Image: \$FILEPATH"
+        echo ""
+        echo "Start core processing"
+        echo "-----------------------------------------------------------"
+        echo ""
+    } > level2_log/\$BASE.log
+
+    force-l2ps \$FILEPATH \$PARAM >> level2_log/\$BASE.log
+
+    {
+        echo ""
+        echo "-----------------------------------------------------------"
+        echo "Core processing signaled DONE"        # a little bit of cheating but if force-l2ps returns 1, Nextflow will fail this process
+        echo ""
+        echo "End of processing: \$(date +"%Y-%m-%d %H:%M:%S")"
+        echo "May the FORCE be with you!"
+    } >> level2_log/\$BASE.log
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

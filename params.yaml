@@ -1,18 +1,17 @@
 # inputs
-#input: "/lustre/fonda/b5/data-cube/level1/{189023,189024,188023,188024}/**"
-input: "/lustre/fonda/b5/data-cube/test-level1/**"
+input: "/lustre/fonda/b5/data-cube/level1/**"
 dem: "/lustre/fonda/b5/data-cube/misc/dem/"
-wvdb: "/lustre/fonda/b5/data-cube/misc/wvpdb/"
+wvdb: "/lustre/fonda/b5/data-cube/misc/wvdb_era/"
 data_cube: "/lustre/fonda/b5/data-cube/datacube-definition.prj"
-aoi: "/lustre/fonda/b5/data-cube/misc/ger.gpkg" # europe.gpkg
+aoi: "/lustre/fonda/b5/data-cube/misc/aoi/europe.gpkg"
 
 # output
 outdir: "/lustre/geographie/katerndf/nf-core-rangeland-outdir"
-ard_outdir: "/lustre/fonda/b5/data-cube/level2-part2"
+ard_outdir: "/lustre/fonda/b5/data-cube/level2-nextflow"
 
 # rs options
-start_date: "2009-07-01"
-end_date: "2009-09-01"
+start_date: "1984-01-01"
+end_date: "1984-12-31"
 
 # workflow opts
 save_ard: true
@@ -20,7 +19,7 @@ publish_dir_enabled: true
 
 # Level 2 output options
 l2_output_format: "CUSTOM"
-l2_file_ouput_options: "/lustre/fonda/b5/data-cube/misc/L2-OUTPUT-OPTIONS.txt"
+l2_file_ouput_options: "/lustre/fonda/b5/data-cube/prm/L2-OUTPUT-OPTIONS.txt"
 l2_output_dst: "TRUE"
 l2_output_vzn: "TRUE"
 l2_output_hot: "TRUE"

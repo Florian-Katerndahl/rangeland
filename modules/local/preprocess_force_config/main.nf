@@ -30,7 +30,7 @@ process PREPROCESS_CONFIG {
 
     script:
     def coo = optional_custom_options.name == 'NO_FILE' ? "NULL" : './' + optional_custom_options
-    
+
     def extractWRS2 = {
         def matcher = it.simpleName =~ /(?<=_)\d{6}(?=_)/
         assert matcher.size() == 1
@@ -40,6 +40,8 @@ process PREPROCESS_CONFIG {
 
     String WRS_tile = extractWRS2(data)
     """
+    set -x
+
     BASE=\$(basename $data)
 
     # generate parameterfile from scratch
@@ -54,11 +56,18 @@ process PREPROCESS_CONFIG {
     TILESIZE=\$(sed '6q;d' $cube)
     BLOCKSIZE=\$(sed '7q;d' $cube)
 
+    # TODO move this to actual preprocessing so we don't have as many parameter files as WRS2 tiles!
     # get dem vrt file and the respective NA value
     # either tile specific vrt or global one (discouraged); user should make sure that not both
     # "versions" are present as order may not be guaranteed
     dem_file=\$(find $dem/ -type f -name "*$WRS_tile\.vrt" -o -name "global.vrt" | head -n 1)
-    DEMNAVAL=\$(gdalinfo \$dem_file | grep 'NoData' | cut -d '=' -f2 | tr -d '[:cntrl:][:space:]')
+    # TODO: not really happy with that hardcoding
+    DEMNAVAL_SET=\$(gdalinfo \$dem_file | { grep 'NoData' || echo 'MISSING'; })
+    if [[ \$DEMNAVAL_SET == "MISSING" ]]; then
+        DEMNAVAL=-32767
+    else
+        DEMNAVAL=\$(gdalinfo \$dem_file | grep 'NoData' | cut -d '=' -f2 | tr -d '[:cntrl:][:space:]')
+    fi
 
     # set parameters
     sed -i "/^FILE_AOI /c\\FILE_AOI = $aoi" \$PARAM
